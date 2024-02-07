@@ -41,5 +41,5 @@ func main() {
     // Contoh: router.GET("/api/v1/protected", utils.MiddlewareJWTAuth(protectedHandler))
 
     // Jalankan server di port 8080
-    router.Run(":31130")
+    router.Run(":8081")
 }
