@@ -29,7 +29,8 @@ func CheckPasswordHash(password, hash string) bool {
 }
 
 
-var jwtKey = []byte("secret_key") // Ganti dengan secret key yang aman
+// JWTKey adalah kunci untuk menandatangani token JWT
+var JWTKey = []byte("secret_key")
 
 // GenerateToken menghasilkan token JWT dengan userID yang diberikan
 func GenerateToken(userID uint) (string, error) {
@@ -41,7 +42,7 @@ func GenerateToken(userID uint) (string, error) {
     claims["exp"] = time.Now().Add(time.Hour * 24).Unix() // Token berlaku selama 24 jam
 
     // Sign token dengan secret key
-    tokenString, err := token.SignedString(jwtKey)
+    tokenString, err := token.SignedString(JWTKey)
     if err != nil {
         return "", err
     }
@@ -61,7 +62,7 @@ func VerifyToken(r *http.Request) (uint, error) {
         if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
             return nil, jwt.ErrInvalidKeyType
         }
-        return jwtKey, nil
+        return JWTKey, nil
     })
 
     if err != nil {
@@ -104,4 +105,6 @@ func MiddlewareJWTAuth(next gin.HandlerFunc) gin.HandlerFunc {
         next(c)
     }
 }
+
+
 
