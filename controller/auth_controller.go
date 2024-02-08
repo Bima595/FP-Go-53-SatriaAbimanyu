@@ -17,6 +17,11 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
+type TokenResponse struct {
+    Token string `json:"token"`
+}
+
+
 // @Summary Register new user
 // @Description Register a new user
 // @Tags Users
@@ -98,12 +103,13 @@ func LoginUserController(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "JWT access token"
-// @Param password body struct { new_password string } true "New password details"
+// @Param password body struct { NewPassword string } true "New password details"
 // @Success 200 {string} string "password updated successfully"
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /change-password [post]
+
 func ChangePasswordController(c *gin.Context) {
 	userID, _ := c.Get("userID")
 	userIDUint := userID.(uint)
@@ -131,7 +137,6 @@ func ChangePasswordController(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "password updated successfully"})
 }
 
-// GenerateToken menghasilkan token JWT dengan userID yang diberikan
 // @Summary Generate JWT token
 // @Description Generate JWT token with the provided userID
 // @Tags Authentication
