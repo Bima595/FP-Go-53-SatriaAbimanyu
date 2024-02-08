@@ -6,7 +6,8 @@ import (
 	"net/http"
 	"strings"
 	"time"
-
+    "os"
+    
     "golang.org/x/crypto/bcrypt"
     "github.com/gin-gonic/gin"
 	"github.com/dgrijalva/jwt-go"
@@ -106,5 +107,12 @@ func MiddlewareJWTAuth(next gin.HandlerFunc) gin.HandlerFunc {
     }
 }
 
+
+func Getenv(key, fallback string) string {
+    if value, ok := os.LookupEnv(key); ok {
+      return value
+    }
+    return fallback
+  }
 
 
