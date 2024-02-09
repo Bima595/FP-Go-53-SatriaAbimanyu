@@ -3,25 +3,24 @@ package config
 import (
     "fmt"
     "log"
+    "os"
     "BACKEND/models"
 
     "gorm.io/driver/mysql"
     "gorm.io/gorm"
 )
 
-const (
-    username = "root"
-    password = "Bima123yayang"
-    database = "finalproject"
-)
-
-var dsn = fmt.Sprintf("%v:%v@/%v", username, password, database)
-
 var DB *gorm.DB
 
 func InitDB() {
+    username := os.Getenv("root")
+    password := os.Getenv("Bima123yayang")
+    database := os.Getenv("finalproject")
+
+    dsn := fmt.Sprintf("%v:%v@/%v", username, password, database)
+
     var err error
-    DB, err = MySQL()
+    DB, err = MySQL(dsn)
     if err != nil {
         log.Fatal(err)
     }
@@ -31,7 +30,7 @@ func InitDB() {
     models.MigrateRatings(DB)
 }
 
-func MySQL() (*gorm.DB, error) {
+func MySQL(dsn string) (*gorm.DB, error) {
     db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
     if err != nil {
         return nil, fmt.Errorf("error opening database: %v", err)
