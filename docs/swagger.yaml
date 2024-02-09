@@ -1,120 +1,407 @@
-basePath: /api/v1
 definitions:
-  controller.ErrorResponse:
+  controllers.ErrorResponse:
     properties:
       message:
         type: string
     type: object
-  controller.TokenResponse:
+  controllers.GameInput:
     properties:
-      token:
+      description:
         type: string
+      name:
+        type: string
+    required:
+    - name
     type: object
-  models.User:
+  controllers.LoginInput:
     properties:
-      id:
-        type: integer
       password:
         type: string
-      roleID:
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  controllers.RatingInput:
+    properties:
+      rating:
+        type: integer
+      review_id:
+        type: integer
+      user_id:
+        type: integer
+    required:
+    - rating
+    - review_id
+    - user_id
+    type: object
+  controllers.RegisterInput:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      role_id:
         type: integer
       username:
         type: string
+    required:
+    - email
+    - password
+    - role_id
+    - username
+    type: object
+  controllers.ReviewInput:
+    properties:
+      comment:
+        type: string
+      game_id:
+        type: integer
+      rating:
+        type: integer
+      user_id:
+        type: integer
+    required:
+    - game_id
+    - rating
+    - user_id
+    type: object
+  models.Game:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  models.Rating:
+    properties:
+      id:
+        type: integer
+      rating:
+        type: integer
+      reviewID:
+        type: integer
+      userID:
+        type: integer
     type: object
 info:
   contact: {}
-  description: Describe your API here
-  title: Your Project's Name
-  version: "1.0"
 paths:
-  /generate-token:
-    post:
-      consumes:
-      - application/json
-      description: Generate JWT token with the provided userID
-      parameters:
-      - description: User ID
-        in: body
-        name: userID
-        required: true
-        schema:
-          type: integer
+  /games:
+    get:
+      description: Get all games from the database
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controller.TokenResponse'
+            items:
+              $ref: '#/definitions/models.Game'
+            type: array
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-      summary: Generate JWT token
+            $ref: '#/definitions/controllers.ErrorResponse'
+      summary: Get all games
       tags:
-      - Authentication
-  /login:
+      - Games
     post:
-      consumes:
-      - application/json
-      description: Log in as an existing user
+      description: Create a new game with the provided details.
       parameters:
-      - description: User object
+      - description: JWT access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Game details
         in: body
-        name: user
+        name: Body
         required: true
         schema:
-          $ref: '#/definitions/models.User'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/controller.TokenResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-      summary: User login
-      tags:
-      - Users
-  /register:
-    post:
-      consumes:
-      - application/json
-      description: Register a new user
-      parameters:
-      - description: User object
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/controllers.GameInput'
       produces:
       - application/json
       responses:
         "201":
-          description: user created successfully
+          description: Created
           schema:
-            type: string
+            additionalProperties: true
+            type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/controller.ErrorResponse'
+            $ref: '#/definitions/controllers.ErrorResponse'
+      summary: Create a new game.
+      tags:
+      - Games
+  /games/{id}:
+    delete:
+      description: Delete an existing game.
+      parameters:
+      - description: JWT access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Game ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: game deleted successfully
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      summary: Delete a game.
+      tags:
+      - Games
+    put:
+      description: Update an existing game with the provided details.
+      parameters:
+      - description: JWT access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Game ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Game details
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.GameInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      summary: Update a game.
+      tags:
+      - Games
+  /login:
+    post:
+      description: Logging in to get jwt token to access admin or user api by roles.
+      parameters:
+      - description: the body to login a user
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.LoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Login as as user.
+      tags:
+      - Auth
+  /ratings:
+    get:
+      description: Get all ratings from the database.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Rating'
+            type: array
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-      summary: Register new user
+            $ref: '#/definitions/controllers.ErrorResponse'
+      summary: Get all ratings.
       tags:
-      - Users
+      - Ratings
+    post:
+      description: Create a new rating for a specific review.
+      parameters:
+      - description: JWT access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Rating details
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.RatingInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      summary: Create a new rating.
+      tags:
+      - Ratings
+  /ratings/{id}:
+    delete:
+      description: Delete an existing rating.
+      parameters:
+      - description: JWT access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Rating ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: rating deleted successfully
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      summary: Delete a rating.
+      tags:
+      - Ratings
+    get:
+      description: Get a rating by its ID.
+      parameters:
+      - description: Rating ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Rating'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      summary: Get a rating by ID.
+      tags:
+      - Ratings
+    put:
+      description: Update an existing rating with the provided details.
+      parameters:
+      - description: JWT access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Rating ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Rating details
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.RatingInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      summary: Update a rating.
+      tags:
+      - Ratings
+  /register:
+    post:
+      description: registering a user from public access.
+      parameters:
+      - description: the body to register a user
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.RegisterInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Register a user.
+      tags:
+      - Auth
+  /reviews:
+    post:
+      description: Create a new review for a specific game.
+      parameters:
+      - description: JWT access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Review details
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.ReviewInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      summary: Create a new review.
+      tags:
+      - Reviews
 swagger: "2.0"

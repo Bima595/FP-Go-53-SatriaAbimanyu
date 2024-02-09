@@ -3,6 +3,7 @@ package config
 import (
     "fmt"
     "log"
+    "BACKEND/models"
 
     "gorm.io/driver/mysql"
     "gorm.io/gorm"
@@ -24,6 +25,10 @@ func InitDB() {
     if err != nil {
         log.Fatal(err)
     }
+    models.MigrateRole(DB)
+    models.MigrateGames(DB)
+    models.MigrateReviews(DB)
+    models.MigrateRatings(DB)
 }
 
 func MySQL() (*gorm.DB, error) {

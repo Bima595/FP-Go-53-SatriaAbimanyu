@@ -1,10 +1,17 @@
 package models
 
-import "time"
+import (
+    "gorm.io/gorm"
+)
 
 type Game struct {
     ID          uint      `gorm:"primaryKey"`
     Name        string    `gorm:"not null"`
-    Description string    `gorm:"type:text"`
-    ReleaseDate time.Time 
+    Description string    
+}
+
+
+// Fungsi ini digunakan untuk membuat atau menginisialisasi tabel Games
+func MigrateGames(db *gorm.DB) {
+    db.AutoMigrate(&Game{})
 }
