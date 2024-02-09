@@ -12,11 +12,9 @@ import (
 var DB *gorm.DB
 
 func InitDB() {
-    // username := os.Getenv("DB_USERNAME")
-    // password := os.Getenv("DB_PASSWORD")
-    // database := os.Getenv("railway")
+    
     // dbURL := "user:password@tcp(hostname:port)/databasename"
-    dsn := fmt.Sprintf("root:edDbcAA5DG1f-eDhhg5B3Dd42dCFHDFC@monorail.proxy.rlwy.net:10973/railway")
+    dsn := fmt.Sprintf("root:edDbcAA5DG1f-eDhhg5B3Dd42dCFHDFC@tcp(monorail.proxy.rlwy.net:10973)/railway")
 
     var err error
     DB, err = MySQL(dsn)
