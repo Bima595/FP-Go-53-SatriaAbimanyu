@@ -1,23 +1,22 @@
 package config
 
 import (
-    "fmt"
-    "log"
-    "os"
-    "BACKEND/models"
+	"BACKEND/models"
+	"fmt"
+	"log"
 
-    "gorm.io/driver/mysql"
-    "gorm.io/gorm"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
 
 func InitDB() {
-    username := os.Getenv("root")
-    password := os.Getenv("Bima123yayang")
-    database := os.Getenv("finalproject")
-
-    dsn := fmt.Sprintf("%v:%v@/%v", username, password, database)
+    // username := os.Getenv("DB_USERNAME")
+    // password := os.Getenv("DB_PASSWORD")
+    // database := os.Getenv("railway")
+    // dbURL := "user:password@tcp(hostname:port)/databasename"
+    dsn := fmt.Sprintf("root:edDbcAA5DG1f-eDhhg5B3Dd42dCFHDFC@monorail.proxy.rlwy.net:10973/railway")
 
     var err error
     DB, err = MySQL(dsn)
