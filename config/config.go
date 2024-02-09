@@ -14,7 +14,7 @@ var DB *gorm.DB
 func InitDB() {
     
     // dbURL := "user:password@tcp(hostname:port)/databasename"
-    dsn := fmt.Sprintf("root:edDbcAA5DG1f-eDhhg5B3Dd42dCFHDFC@tcp(monorail.proxy.rlwy.net:10973)/railway")
+    dsn := fmt.Sprintf("root:edDbcAA5DG1f-eDhhg5B3Dd42dCFHDFC@tcp(monorail.proxy.rlwy.net:10973)/finalproject")
 
     var err error
     DB, err = MySQL(dsn)
