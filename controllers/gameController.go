@@ -1,11 +1,11 @@
 package controllers
 
 import (
-    "BACKEND/models"
-    "net/http"
+	"BACKEND/models"
+	"net/http"
 
-    "github.com/gin-gonic/gin"
-    "gorm.io/gorm"
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type ErrorResponse struct {
@@ -80,7 +80,7 @@ func GetGames(c *gin.Context) {
 // @Produce json
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} ErrorResponse
-// @Router /games/{id} [put]
+// @Router /games/{id} [patch]
 func UpdateGame(c *gin.Context) {
     db := c.MustGet("db").(*gorm.DB)
     var input GameInput
