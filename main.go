@@ -46,7 +46,7 @@ func main() {
     // router
     var port = envPortOr("3000")
     r := routes.SetupRouter(db)
-    r.Run(":" + port)
+    r.Run(port)
     
 }
 
