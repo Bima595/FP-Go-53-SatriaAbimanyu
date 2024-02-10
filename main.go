@@ -29,7 +29,7 @@ func main() {
         log.Fatal("Error loading .env file")
       }
     }
-    
+
     // programmatically set swagger info
     docs.SwaggerInfo.Title = "Swagger Example API"
     docs.SwaggerInfo.Description = "This is a sample server Movie."
@@ -37,15 +37,12 @@ func main() {
     docs.SwaggerInfo.Host = "localhost:8081"
     docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
-    // database connection
-    config.InitDB()
-    defer func() {
-        if db, err := config.DB.DB(); err == nil {
-            db.Close()
-        }
-    }()
+ // database connection
+    db := config.ConnectDataBase()
+    sqlDB, _ := db.DB()
+    defer sqlDB.Close()
 
     // router
-    r := routes.SetupRouter(config.DB)
+    r := routes.SetupRouter(db)
     r.Run("localhost:8081")
 }

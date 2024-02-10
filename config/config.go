@@ -1,38 +1,29 @@
 package config
 
 import (
-	"BACKEND/models"
-	"fmt"
-	"log"
+ "BACKEND/models"
+ "BACKEND/utils"
+ "fmt"
 
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
+ "gorm.io/driver/mysql"
+ "gorm.io/gorm"
 )
 
-var DB *gorm.DB
+func ConnectDataBase() *gorm.DB {
+  username := utils.Getenv("DATABASE_USERNAME", "root")
+  password := utils.Getenv("DATABASE_PASSWORD", "Bima123yayang")
+  host := utils.Getenv("DATABASE_HOST", "localhost")
+  port := utils.Getenv("DATABASE_PORT", "3306")
+  database := utils.Getenv("DATABASE_NAME", "finalproject")
 
-func InitDB() {
-    
-    // dbURL := "user:password@tcp(hostname:port)/databasename"
-    dsn := fmt.Sprintf("root:edDbcAA5DG1f-eDhhg5B3Dd42dCFHDFC@tcp(monorail.proxy.rlwy.net:10973)/finalproject")
+  dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", username, password, host, port, database)
+  db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-    var err error
-    DB, err = MySQL(dsn)
-    if err != nil {
-        log.Fatal(err)
-    }
-    models.MigrateRole(DB)
-    models.MigrateGames(DB)
-    models.MigrateReviews(DB)
-    models.MigrateRatings(DB)
-}
+  if err != nil {
+    panic(err.Error())
+  }
 
-func MySQL(dsn string) (*gorm.DB, error) {
-    db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-    if err != nil {
-        return nil, fmt.Errorf("error opening database: %v", err)
-    }
+  db.AutoMigrate(&models.User{}, &models.Game{}, &models.Rating{}, &models.Review{}, &models.Role{})
 
-    log.Println("Connected to the database")
-    return db, nil
+  return db
 }
