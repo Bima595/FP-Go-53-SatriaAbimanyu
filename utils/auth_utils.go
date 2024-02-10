@@ -1,4 +1,3 @@
-
 package utils
 
 import "os"
@@ -9,3 +8,4 @@ func Getenv(key, fallback string) string {
   }
   return fallback
 }
+
