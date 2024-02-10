@@ -1,110 +1,61 @@
 package controllers
 
+// Import model yang sesuai
 import (
-    "BACKEND/models"
-    "net/http"
+	"BACKEND/models"
+	"net/http"
 
-    "github.com/gin-gonic/gin"
-    "gorm.io/gorm"
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
-type RatingInput struct {
-    ReviewID uint `json:"review_id" binding:"required"`
-    Rating   int  `json:"rating" binding:"required"`
-    UserID   uint `json:"user_id" binding:"required"`
+// Gunakan struct yang sesuai untuk input
+type GameTypeInput struct {
+    GameID   uint   `json:"game_id" binding:"required"`
+    Theme    string `json:"theme" binding:"required"`
 }
 
-// CreateRating godoc
-// @Summary Create a new rating.
-// @Description Create a new rating for a specific review.
-// @Tags Ratings
-// @Param Authorization header string true "JWT access token"
-// @Param Body body RatingInput true "Rating details"
-// @Produce json
-// @Success 201 {object} map[string]interface{}
-// @Failure 400 {object} ErrorResponse
-// @Router /ratings [post]
-func CreateRating(c *gin.Context) {
+// Perbarui fungsi CreateGameType untuk membuat GameType baru
+func CreateGameType(c *gin.Context) {
     db := c.MustGet("db").(*gorm.DB)
-    var input RatingInput
+    var input GameTypeInput
 
     if err := c.ShouldBindJSON(&input); err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return
     }
 
-    rating := models.Rating{
-        ReviewID: input.ReviewID,
-        Rating:   input.Rating,
-        UserID:   input.UserID,
+    gameType := models.GameType{
+        GameID:   input.GameID,
+        Theme:    input.Theme,
     }
 
-    if err := db.Create(&rating).Error; err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create rating"})
+    if err := db.Create(&gameType).Error; err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create game type"})
         return
     }
 
-    c.JSON(http.StatusCreated, gin.H{"message": "rating created successfully", "rating": rating})
+    c.JSON(http.StatusCreated, gin.H{"message": "game type created successfully", "game_type": gameType})
 }
 
-// GetRatings godoc
-// @Summary Get all ratings.
-// @Description Get all ratings from the database.
-// @Tags Ratings
-// @Produce json
-// @Success 200 {array} models.Rating
-// @Failure 500 {object} ErrorResponse
-// @Router /ratings [get]
-func GetRatings(c *gin.Context) {
-    db := c.MustGet("db").(*gorm.DB)
-
-    var ratings []models.Rating
-    if err := db.Find(&ratings).Error; err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch ratings"})
-        return
-    }
-
-    c.JSON(http.StatusOK, ratings)
-}
-
-
-// GetRating godoc
-// @Summary Get a rating by ID.
-// @Description Get a rating by its ID.
-// @Tags Ratings
-// @Param id path int true "Rating ID"
-// @Produce json
-// @Success 200 {object} models.Rating
-// @Failure 404 {object} ErrorResponse
-// @Router /ratings/{id} [get]
-func GetRating(c *gin.Context) {
+// Perbarui fungsi GetGameType untuk mendapatkan GameType berdasarkan ID
+func GetGameType(c *gin.Context) {
     db := c.MustGet("db").(*gorm.DB)
     id := c.Param("id")
 
-    var rating models.Rating
-    if err := db.First(&rating, id).Error; err != nil {
-        c.JSON(http.StatusNotFound, gin.H{"error": "rating not found"})
+    var gameType models.GameType
+    if err := db.First(&gameType, id).Error; err != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": "game type not found"})
         return
     }
 
-    c.JSON(http.StatusOK, rating)
+    c.JSON(http.StatusOK, gameType)
 }
 
-
-// UpdateRating godoc
-// @Summary Update a rating.
-// @Description Update an existing rating with the provided details.
-// @Tags Ratings
-// @Param Authorization header string true "JWT access token"
-// @Param id path int true "Rating ID"
-// @Param Body body RatingInput true "Rating details"
-// @Produce json
-// @Success 200 {object} map[string]interface{}
-// @Failure 400 {object} ErrorResponse
-// @Router /ratings/{id} [put]
-func UpdateRating(c *gin.Context) {
+// Perbarui fungsi UpdateGameType untuk mengupdate GameType
+func UpdateGameType(c *gin.Context) {
     db := c.MustGet("db").(*gorm.DB)
-    var input RatingInput
+    var input GameTypeInput
 
     id := c.Param("id")
 
@@ -113,48 +64,38 @@ func UpdateRating(c *gin.Context) {
         return
     }
 
-    var rating models.Rating
-    if err := db.First(&rating, id).Error; err != nil {
-        c.JSON(http.StatusNotFound, gin.H{"error": "rating not found"})
+    var gameType models.GameType
+    if err := db.First(&gameType, id).Error; err != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": "game type not found"})
         return
     }
 
-    rating.ReviewID = input.ReviewID
-    rating.Rating = input.Rating
-    rating.UserID = input.UserID
+    gameType.GameID = input.GameID
+    gameType.Theme = input.Theme
 
-    if err := db.Save(&rating).Error; err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update rating"})
+    if err := db.Save(&gameType).Error; err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update game type"})
         return
     }
 
-    c.JSON(http.StatusOK, gin.H{"message": "rating updated successfully", "rating": rating})
+    c.JSON(http.StatusOK, gin.H{"message": "game type updated successfully", "game_type": gameType})
 }
 
-// DeleteRating godoc
-// @Summary Delete a rating.
-// @Description Delete an existing rating.
-// @Tags Ratings
-// @Param Authorization header string true "JWT access token"
-// @Param id path int true "Rating ID"
-// @Produce json
-// @Success 200 {string} string "rating deleted successfully"
-// @Failure 404 {object} ErrorResponse
-// @Router /ratings/{id} [delete]
-func DeleteRating(c *gin.Context) {
+// Perbarui fungsi DeleteGameType untuk menghapus GameType
+func DeleteGameType(c *gin.Context) {
     db := c.MustGet("db").(*gorm.DB)
     id := c.Param("id")
 
-    var rating models.Rating
-    if err := db.First(&rating, id).Error; err != nil {
-        c.JSON(http.StatusNotFound, gin.H{"error": "rating not found"})
+    var gameType models.GameType
+    if err := db.First(&gameType, id).Error; err != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": "game type not found"})
         return
     }
 
-    if err := db.Delete(&rating).Error; err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to delete rating"})
+    if err := db.Delete(&gameType).Error; err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to delete game type"})
         return
     }
 
-    c.JSON(http.StatusOK, gin.H{"message": "rating deleted successfully"})
+    c.JSON(http.StatusOK, gin.H{"message": "game type deleted successfully"})
 }

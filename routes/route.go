@@ -31,14 +31,11 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
     // Review routes
     r.POST("/reviews", controllers.CreateReview) // Tambahkan route untuk membuat review
 
-    // Review routes
-// Ratings routes
-r.POST("/ratings", controllers.CreateRating) // Route untuk membuat rating
-r.GET("/ratings", controllers.GetRatings)    // Route untuk membaca semua ratings
-r.GET("/ratings/:id", controllers.GetRating) // Route untuk membaca satu rating
-r.PUT("/ratings/:id", controllers.UpdateRating) // Route untuk memperbarui rating
-r.DELETE("/ratings/:id", controllers.DeleteRating) // Route untuk menghapus rating
-
+ // Routes untuk GameType
+ r.POST("/game_types", controllers.CreateGameType)
+ r.GET("/game_types/:id", controllers.GetGameType)
+ r.PUT("/game_types/:id", controllers.UpdateGameType)
+ r.DELETE("/game_types/:id", controllers.DeleteGameType)
 
     
     // Swagger route

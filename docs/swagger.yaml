@@ -23,19 +23,6 @@ definitions:
     - password
     - username
     type: object
-  controllers.RatingInput:
-    properties:
-      rating:
-        type: integer
-      review_id:
-        type: integer
-      user_id:
-        type: integer
-    required:
-    - rating
-    - review_id
-    - user_id
-    type: object
   controllers.RegisterInput:
     properties:
       email:
@@ -75,17 +62,6 @@ definitions:
         type: integer
       name:
         type: string
-    type: object
-  models.Rating:
-    properties:
-      id:
-        type: integer
-      rating:
-        type: integer
-      reviewID:
-        type: integer
-      userID:
-        type: integer
     type: object
 info:
   contact:
@@ -228,138 +204,6 @@ paths:
       summary: Login as as user.
       tags:
       - Auth
-  /ratings:
-    get:
-      description: Get all ratings from the database.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.Rating'
-            type: array
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/controllers.ErrorResponse'
-      summary: Get all ratings.
-      tags:
-      - Ratings
-    post:
-      description: Create a new rating for a specific review.
-      parameters:
-      - description: JWT access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: Rating details
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/controllers.RatingInput'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/controllers.ErrorResponse'
-      summary: Create a new rating.
-      tags:
-      - Ratings
-  /ratings/{id}:
-    delete:
-      description: Delete an existing rating.
-      parameters:
-      - description: JWT access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: Rating ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: rating deleted successfully
-          schema:
-            type: string
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/controllers.ErrorResponse'
-      summary: Delete a rating.
-      tags:
-      - Ratings
-    get:
-      description: Get a rating by its ID.
-      parameters:
-      - description: Rating ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Rating'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/controllers.ErrorResponse'
-      summary: Get a rating by ID.
-      tags:
-      - Ratings
-    put:
-      description: Update an existing rating with the provided details.
-      parameters:
-      - description: JWT access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: Rating ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Rating details
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/controllers.RatingInput'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/controllers.ErrorResponse'
-      summary: Update a rating.
-      tags:
-      - Ratings
   /register:
     post:
       description: registering a user from public access.
