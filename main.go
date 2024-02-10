@@ -35,7 +35,7 @@ func main() {
     docs.SwaggerInfo.Title = "Swagger Example API"
     docs.SwaggerInfo.Description = "This is a sample server Movie."
     docs.SwaggerInfo.Version = "1.0"
-    docs.SwaggerInfo.Host = ":3000"
+    docs.SwaggerInfo.Host = "fp-project-sanbercode-go-53-satriaabimanyu.up.railway.app"
     docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
  // database connection
